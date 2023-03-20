@@ -1,0 +1,177 @@
+﻿@page "/"
+@using System.ComponentModel;
+@using AllRazorAndBlazor.Shared
+@using Microsoft.AspNetCore.Components.Rendering;
+@using AllRazorAndBlazor.Pages;
+@attribute [Description("The Description")]
+@inherits ComponentBase
+@inject IService MyService
+@implements IDisposable
+@layout MainLayout
+@namespace BlazorComponents
+
+<PageTitle>Index</PageTitle>
+
+<p>@MyService</p>
+<p>@@MyService</p>
+<a href="mailto:Support@contoso.com">Support@contoso.com</a>
+
+<p>@DateTime.Now</p>
+<p>@DateTime.Parse("1/1/1900", provider: null)</p>
+
+<p>Last week this time: @(DateTime.Now - TimeSpan.FromDays(7))</p>
+
+@{
+    var abc = "xyz";
+}
+<p>Blah@(abc.Length)</p>
+
+<p>@(MyService.DoSomething<int>())</p>
+
+@{
+    var inCSharp = true;
+    <p>Now in HTML, was in C# @inCSharp</p>
+}
+
+@if (true)
+{
+    <text>Text @abc</text>
+}
+
+@for (var i = 0; i < 3; i++)
+{
+    @:Line: @i
+}
+
+<input type="checkbox" checked="@true" name="true" />
+<input type="checkbox" checked="@false" name="false" />
+
+@if (abc.Length == 0)
+{
+    <p>The length was zero.</p>
+}
+else if (abc.Length >= 1337)
+{
+    <p>The length is large.</p>
+}
+else
+{
+    <p>The length is small.</p>
+}
+
+@switch (abc.Length)
+{
+    case 1:
+        <p>The length is 1!</p>
+        break;
+    case 1337:
+        <p>The length is 1337!</p>
+        break;
+    default:
+        <p>The length wasn't 1 or 1337.</p>
+        break;
+}
+
+@foreach (var x in abc)
+{
+    <p>@x</p>
+}
+
+@{
+    var j = 0;
+}
+@while (j < abc.Length)
+{
+    var character = abc[j];
+    <p>@character</p>
+
+    j++;
+}
+
+@{
+    j = 0;
+}
+@do
+{
+    var character = abc[j];
+    <p>@character</p>
+
+    j++;
+} while (j < abc.Length);
+
+
+@using (MyService.GetDisposable())
+{
+    <p>Boo</p>
+}
+
+@try
+{
+    throw new InvalidOperationException("You did something invalid.");
+}
+catch (Exception ex)
+{
+    <p>The exception message: @ex.Message</p>
+}
+finally
+{
+    <p>The finally statement.</p>
+}
+
+@lock (abc)
+{
+    <p>Boo</p>
+}
+
+@{
+    /* C# comment */
+    // Another C# comment
+}
+<!-- HTML comment -->
+@* Razor comment *@
+
+@functions {
+    public string GetHello()
+    {
+        return "Hello";
+    }
+
+    private void RenderName(RenderTreeBuilder __builder, string name)
+    {
+        <p>Name: <strong>@name</strong></p>
+    }
+}
+
+<p>From method: @GetHello()</p>
+<p>
+    @{
+        RenderName(__builder, "David");
+    }
+</p>
+
+@code {
+    public string GetHello2()
+    {
+        return "Hello 2";
+    }
+
+    private void RenderName2(RenderTreeBuilder __builder, string name)
+    {
+        <p>Name 2: <strong>@name</strong></p>
+    }
+}
+
+<p>From method: @GetHello2()</p>
+<p>
+    @{
+        RenderName2(__builder, "David");
+    }
+</p>
+
+@code {
+    private bool _isDisposed;
+
+    public void Dispose() => _isDisposed = true;
+}
+
+<Component Property="PropertyValue" SomeOther="hi there" />

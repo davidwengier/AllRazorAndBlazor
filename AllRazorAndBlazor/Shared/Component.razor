@@ -1,0 +1,13 @@
+﻿<p>@Property</p>
+<p>@string.Join(", ", Rest.Keys)</p>
+<p>@string.Join(", ", Rest.Values)</p>
+<p @attributes="Rest"></p>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string? Property { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Rest { get; set; }
+}
