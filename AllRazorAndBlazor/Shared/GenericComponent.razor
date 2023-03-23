@@ -1,0 +1,31 @@
+﻿@typeparam TItem where TItem : notnull
+
+<p>@typeof(TItem)s:</p>
+@if (Items is not null)
+{
+    <ul>
+        @foreach (var item in Items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}
+
+@if (CascadeItems is not null)
+{
+    <p>Cascaded Items:</p>
+    <ul>
+        @foreach (var item in CascadeItems)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<TItem>? Items { get; set; }
+
+    [CascadingParameter]
+    protected IEnumerable<TItem>? CascadeItems { get; set; }
+}

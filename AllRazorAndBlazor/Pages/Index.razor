@@ -228,3 +228,35 @@ finally
         await firstInput.FocusAsync();
     }
 }
+
+<GenericComponent Items="@(new string[] { "Item 1", "Item 2" })" TItem="string" />
+<GenericComponent Items="@(new string[] { "Item 1", "Item 2" })" />
+<GenericComponent Items="@Ints" TItem="int" />
+<GenericComponent Items="Ints" />
+
+<GenericParentComponent TItem="string">
+    <GenericComponent Items="@(new string[] { "Sub Item 1", "Sub Item 2" })" />
+</GenericParentComponent>
+
+<GenericParentComponent TItem="int">
+    <GenericComponent Items="Ints" />
+</GenericParentComponent>
+
+<GenericParentComponent Items="Strings">
+    <GenericComponent Items="Strings" />
+</GenericParentComponent>
+
+<CascadingValue Value="@Strings">
+    <GenericComponent TItem="string" />
+</CascadingValue>
+
+<CascadingValue Value="Strings">
+    <GenericParentComponent TItem="string">
+        <GenericComponent />
+    </GenericParentComponent>
+</CascadingValue>
+
+@code {
+    private string[] Strings = new[] { "Hello", "World" };
+    private int[] Ints = new[] { 1, 2, 3 };
+}
