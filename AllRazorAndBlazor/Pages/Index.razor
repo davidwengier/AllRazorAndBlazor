@@ -3,12 +3,14 @@
 @using AllRazorAndBlazor.Shared
 @using Microsoft.AspNetCore.Components.Rendering;
 @using AllRazorAndBlazor.Pages;
+@using System.Globalization;
 @attribute [Description("The Description")]
 @inherits ComponentBase
 @inject IService MyService
 @implements IDisposable
 @layout MainLayout
 @namespace BlazorComponents
+@preservewhitespace true
 
 <PageTitle>Index</PageTitle>
 
@@ -174,4 +176,55 @@ finally
     public void Dispose() => _isDisposed = true;
 }
 
-<Component Property="PropertyValue" SomeOther="hi there" />
+<Component Property="PropertyValue" SomeOther="hi there" OnClickCallback="ButtonClicked" />
+
+<p>
+    <input @ref="firstInput" @bind="InputValue" @bind:event="oninput" @bind:after="BindAfter" /> <br />
+    <input @bind="InputValue" @bind:event="oninput" @bind:after="@(() => AfterValue = "AfterLambda: " + InputValue)" /> <br />
+    <input type="text" @bind:get="InputValue" @bind:set="Set" /><br />
+    <input type="text" @bind:get="InputValue" @bind:set="@(v => InputValue = "Lambda: " + v)" /><br />
+    <InputText @bind-Value="InputValue" @bind-Value:event="ValueChanged" @bind-Value:after="BindAfter" /><br />
+    <InputText @bind-Value="InputValue" @bind-Value:event="ValueChanged" @bind-Value:after="@(() => AfterValue = "AfterLambda: " + InputValue)" /><br />
+    <InputText @bind-Value:get="InputValue" @bind-Value:set="Set" /><br />
+    <InputText @bind-Value:get="InputValue" @bind-Value:set="@(v => InputValue = "Lambda: " + v)" /><br />
+    <input @bind="BoundDate" @bind:format="yyyy-MM-dd" /><br />
+    <input @bind="BoundNumber" @bind:culture="Turkish" />
+</p>
+
+<ul>
+    <li @key="InputValue">Input: @InputValue</li>
+    <li>After: @AfterValue</li>
+    <li>Date: @BoundDate</li>
+</ul>
+
+@code {
+    private CultureInfo Turkish = CultureInfo.GetCultureInfo("de-DE");
+    private string? InputValue { get; set; }
+    private string? AfterValue { get; set; }
+    private DateTime BoundDate = new(2020, 1, 1);
+    private decimal BoundNumber = 1_542.23M;
+
+    private void Set(string value)
+    {
+        InputValue = "Set: " + value;
+    }
+
+    private void BindAfter()
+    {
+        AfterValue = "After: " + InputValue;
+    }
+}
+
+<button @onclick="ButtonClicked" @onclick:preventDefault @onclick:stopPropagation>@BoundNumber</button>
+<button @onclick="@(() => BoundNumber++)" @onclick:preventDefault="shouldPreventDefault" @onclick:stopPropagation="true">@BoundNumber</button>
+
+@code {
+    private ElementReference firstInput;
+    private bool shouldPreventDefault = true;
+
+    private async Task ButtonClicked()
+    {
+        BoundNumber += 1.23M;
+        await firstInput.FocusAsync();
+    }
+}
